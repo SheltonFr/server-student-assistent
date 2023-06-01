@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import z, { ZodError } from "zod";
 import subjectService from "../services/subject.service";
+
 const create = async (req: Request, res: Response) => {
   const userId = parseInt(req.userId as string);
 
@@ -29,8 +30,17 @@ const create = async (req: Request, res: Response) => {
 
     return res.sendStatus(500);
   }
-
-  return res.send({ message: "Done" });
 };
 
-export { create };
+const findByUserId = async (req: Request, res: Response) => {
+  const userId = parseInt(req.userId as string);
+  try {
+    const subjects = await subjectService.findByUserId(userId);
+
+    return res.status(200).send({ subjects });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+};
+
+export { create, findByUserId };

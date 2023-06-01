@@ -28,14 +28,17 @@ model User {
 
 model Subject {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String   
   teacher    String
   grade      Int      @db.TinyInt
   status     Status   @default(PENDING)
   created_at DateTime @default(now())
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  Task   Task[]
+
+  @@unique([name, userId])
 }
 
 model Task {
@@ -46,6 +49,10 @@ model Task {
   status      Status   @default(PENDING)
   created_at  DateTime @default(now())
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+  subjectId Int
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([title, userId, subjectId])
 }

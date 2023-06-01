@@ -11,4 +11,7 @@ const create = async (body: subjectRequestBody, userId: number) =>
     },
   });
 
-export default { create };
+const findByUserId = async (userId: number) =>
+  prisma.subject.findMany({ where: { userId: userId } });
+
+export default { create, findByUserId };
