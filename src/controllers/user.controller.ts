@@ -11,7 +11,6 @@ const create = async (req: Request, res: Response) => {
     password: z.string(),
     username: z.string(),
   });
-
   try {
     const { username, email, password } = userSchema.parse(req.body);
 
@@ -21,24 +20,15 @@ const create = async (req: Request, res: Response) => {
         .send({ message: "Submit all fields to registration" });
     }
 
-    let user = await userService.findByEmail(email);
+    const user = await userService.create({ username, email, password });
 
+    // so será executado , depois da resposta de criacao do user
     if (!user) {
-      user = await userService.create({ username, email, password });
-
-      // so será executado , depois da resposta de criacao do user
-      if (!user) {
-        return res.status(400).send({ message: "Error creating user" });
-      }
-
-      res.status(201).send({
-        id: user.id,
-        username,
-        email,
-      });
+      return res.status(400).send({ message: "Error creating user" });
     }
-
-    return res.status(400).send({ message: "An error has occurred!" });
+    const token = generateToken(user.id);
+    console.log(token)
+    res.status(201).send({ token });
   } catch (error) {
     res.status(500).send({ message: "Server eror" });
   }
