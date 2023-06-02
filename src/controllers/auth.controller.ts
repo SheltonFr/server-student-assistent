@@ -4,6 +4,9 @@ import z from "zod";
 import { findByEmail, generateToken } from "../services/auth.service";
 
 const login = async (req: Request, res: Response) => {
+
+  console.log("Ligin Route called...");
+
   const requestSchema = z.object({
     email: z.string().email(),
     password: z.string(),

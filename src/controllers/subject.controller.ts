@@ -4,6 +4,7 @@ import subjectService from "../services/subject.service";
 
 const create = async (req: Request, res: Response) => {
   const userId = parseInt(req.userId as string);
+  console.log("Create User Route called...");
 
   const subjectSchema = z.object({
     name: z.string().nonempty(),
@@ -34,6 +35,8 @@ const create = async (req: Request, res: Response) => {
 
 const findByUserId = async (req: Request, res: Response) => {
   const userId = parseInt(req.userId as string);
+  
+
   try {
     const subjects = await subjectService.findByUserId(userId);
 
