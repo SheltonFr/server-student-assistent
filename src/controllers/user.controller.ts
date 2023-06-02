@@ -10,6 +10,7 @@ const create = async (req: Request, res: Response) => {
     password: z.string(),
     username: z.string(),
   });
+  
   try {
     const { username, email, password } = userSchema.parse(req.body);
 
@@ -19,25 +20,35 @@ const create = async (req: Request, res: Response) => {
         .send({ message: "Submit all fields to registration" });
     }
 
-    const user = await userService.create({ username, email, password });
+    let user = await userService.findByEmail(email);
 
-    // so será executado , depois da resposta de criacao do user
     if (!user) {
-      return res.status(400).send({ message: "Error creating user" });
-    }
-    res.status(201).send({
-      message: "User created successfully!",
+      user = await userService.create({ username, email, password });
 
-      user: {
-        id: user.id,
-        username,
-        email,
-      } as User,
-    });
+      // so será executado , depois da resposta de criacao do user
+      if (!user) {
+        return res.status(400).send({ message: "Error creating user" });
+      }
+
+      res.status(201).send({
+        message: "User created successfully!",
+
+        user: {
+          id: user.id,
+          username,
+          email,
+        } as User,
+      });
+    } 
+
+    return res.status(400).send({message: "An error has occurred!"})
   } catch (error) {
     res.status(500).send({ message: "Server eror" });
   }
 };
+
+
+
 
 const findById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id as string);
