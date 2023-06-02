@@ -13,8 +13,11 @@ const create = async (body: userRequestBody) => {
   });
 };
 
+const findByEmail = (email: string) =>
+  prisma.user.findUnique({ where: { email: email } });
+
 const findAll = () => prisma.user.findMany();
 
 const findById = (id: number) => prisma.user.findUnique({ where: { id: id } });
 
-export default { create, findAll, findById };
+export default { create, findAll, findById, findByEmail };
