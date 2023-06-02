@@ -3,6 +3,7 @@ import z from "zod";
 import userService from "../services/user.service";
 import { User } from "@prisma/client";
 import { prisma } from "../db/prisma";
+import { generateToken } from "../services/auth.service";
 
 const create = async (req: Request, res: Response) => {
   const userSchema = z.object({
@@ -25,15 +26,9 @@ const create = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(400).send({ message: "Error creating user" });
     }
-    res.status(201).send({
-      message: "User created successfully!",
-
-      user: {
-        id: user.id,
-        username,
-        email,
-      } as User,
-    });
+    const token = generateToken(user.id);
+    console.log(token)
+    res.status(201).send({ token });
   } catch (error) {
     res.status(500).send({ message: "Server eror" });
   }
