@@ -23,7 +23,7 @@ const create = async (req: Request, res: Response) => {
       return res.status(400).send({ message: "An error occurred!" });
     }
 
-    return res.status(201).send({ subject });
+    return res.status(201).send(subject);
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).send(error.message);
@@ -40,7 +40,7 @@ const findByUserId = async (req: Request, res: Response) => {
   try {
     const subjects = await subjectService.findByUserId(userId);
 
-    return res.status(200).send({ subjects });
+    return res.status(200).send( subjects );
   } catch (error) {
     return res.sendStatus(500);
   }

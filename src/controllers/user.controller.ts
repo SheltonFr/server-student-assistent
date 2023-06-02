@@ -3,6 +3,7 @@ import z from "zod";
 import userService from "../services/user.service";
 import { User } from "@prisma/client";
 import { prisma } from "../db/prisma";
+import { generateToken } from "../services/auth.service";
 
 const create = async (req: Request, res: Response) => {
   const userSchema = z.object({
@@ -10,7 +11,7 @@ const create = async (req: Request, res: Response) => {
     password: z.string(),
     username: z.string(),
   });
-  
+
   try {
     const { username, email, password } = userSchema.parse(req.body);
 
@@ -31,24 +32,17 @@ const create = async (req: Request, res: Response) => {
       }
 
       res.status(201).send({
-        message: "User created successfully!",
-
-        user: {
-          id: user.id,
-          username,
-          email,
-        } as User,
+        id: user.id,
+        username,
+        email,
       });
-    } 
+    }
 
-    return res.status(400).send({message: "An error has occurred!"})
+    return res.status(400).send({ message: "An error has occurred!" });
   } catch (error) {
     res.status(500).send({ message: "Server eror" });
   }
 };
-
-
-
 
 const findById = async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id as string);
