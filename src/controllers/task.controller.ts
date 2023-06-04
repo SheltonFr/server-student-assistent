@@ -6,7 +6,7 @@ const create = async (req: Request, res: Response) => {
   const TaskSchema = z.object({
     title: z.string().nonempty(),
     description: z.string().nonempty(),
-    deadline: z.string().datetime(),
+    deadline: z.string(),
     subject: z.number().nonnegative(),
   });
 
@@ -16,6 +16,7 @@ const create = async (req: Request, res: Response) => {
     const { title, deadline, description, subject } = TaskSchema.parse(
       req.body
     );
+
     const task = await taskService.create(
       { title, deadline, description, subject },
       userId
@@ -27,13 +28,13 @@ const create = async (req: Request, res: Response) => {
         .send({ message: "An error occurred while creating Task!" });
     }
 
-    return res.status(201).send({ task });
+    return res.status(201).send(task);
   } catch (error) {
     if (error instanceof ZodError) {
       return res.status(400).send({ error: error.message });
     }
-
-    return res.sendStatus(500);
+    console.error(error);
+    return res.status(500).send(error);
   }
 };
 
@@ -42,7 +43,7 @@ const findByUserId = async (req: Request, res: Response) => {
 
   try {
     const tasks = await taskService.findByUserId(userId);
-    return res.status(200).send({ tasks });
+    return res.status(200).send(tasks);
   } catch (error) {
     return res.sendStatus(500);
   }

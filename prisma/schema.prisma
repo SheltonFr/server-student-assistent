@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_LOCAL")
 }
 
 enum Status {
@@ -18,34 +18,34 @@ enum Status {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   username String
-  email    String    @unique
+  email    String @unique
   password String
-  Task     Task[]
-  Subject  Subject[]
+
+  Subject Subject[]
+  Task    Task[]
 }
 
 model Subject {
   id         Int      @id @default(autoincrement())
-  name       String   
+  name       String
   teacher    String
   grade      Int      @db.TinyInt
   status     Status   @default(PENDING)
   created_at DateTime @default(now())
 
   userId Int
-  user   User   @relation(fields: [userId], references: [id])
-  Task   Task[]
+  user   User @relation(fields: [userId], references: [id])
 
-  @@unique([name, userId])
+  Task Task[]
 }
 
 model Task {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  deadline    DateTime
+  deadline    DateTime @db.Timestamp()
   status      Status   @default(PENDING)
   created_at  DateTime @default(now())
 
@@ -53,6 +53,4 @@ model Task {
   subject   Subject @relation(fields: [subjectId], references: [id])
   userId    Int
   user      User    @relation(fields: [userId], references: [id])
-
-  @@unique([title, userId, subjectId])
 }
