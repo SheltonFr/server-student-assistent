@@ -30,6 +30,7 @@ const create = async (req: Request, res: Response) => {
     console.log(token)
     res.status(201).send({ token });
   } catch (error) {
+    console.error(error)
     res.status(500).send({ message: "Server eror" });
   }
 };

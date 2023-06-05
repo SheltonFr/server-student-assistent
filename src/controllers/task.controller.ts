@@ -60,7 +60,7 @@ const findById = async (req: Request, res: Response) => {
       return res.status(404).send({ message: "Task not found!" });
     }
 
-    return res.send({ task });
+    return res.send( task );
   } catch (error) {
     return res.sendStatus(500);
   }
